@@ -78,6 +78,10 @@ pre:hover::after {
     visibility: visible;
 }
 
+.line{
+  padding-left: 20px;
+}
+
 .code-orange{
 	color: #EF6C00;
 }

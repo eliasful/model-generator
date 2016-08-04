@@ -26,14 +26,14 @@ function generator(result, projeto, classe, tabela){
 		if (result[i][2]) {
 			if ( result[i][2].substr(0, 2).toLowerCase() == "rh" ) {
 				var cla = result[i][2].substr(2, result[i][2].length).trim().toLowerCase();
-				sql += '&emsp; <span class="code-yellow">@JoinColumn</span>(name = <span class="code-green">"'+result[i][0].trim().toLowerCase()+'"</span>)</br>'+
-					"&emsp; <span class='code-orange'>private</span> " + cla.capitalizeFirstLetter() + " <span class='code-purple'>" + cla.trim().toLowerCase() + "</span>;</br>";
+				sql += '<span class="code-yellow line">@JoinColumn</span>(name = <span class="code-green">"'+result[i][0].trim().toLowerCase()+'"</span>)</br>'+
+					"<span class='code-orange line'>private</span> " + cla.capitalizeFirstLetter() + " <span class='code-purple'>" + cla.trim().toLowerCase() + "</span>;</br>";
 			}else{
-				sql += '&emsp; <span class="code-yellow">@JoinColumn</span>(name = <span class="code-green">"'+result[i][2].trim().toLowerCase()+'"</span>)</br>'+
-					"&emsp; <span class='code-orange'>private</span> " + result[i][2].capitalizeFirstLetter().trim() + " <span class='code-purple'>" + result[i][0].trim().toLowerCase() + "</span>;</br>";
+				sql += '<span class="code-yellow line">@JoinColumn</span>(name = <span class="code-green">"'+result[i][2].trim().toLowerCase()+'"</span>)</br>'+
+					"<span class='code-orange line'>private</span> " + result[i][2].capitalizeFirstLetter().trim() + " <span class='code-purple'>" + result[i][0].trim().toLowerCase() + "</span>;</br>";
 			}
 		}else{
-			sql += "&emsp; <span class='code-orange'>private</span> " + result[i][1].trim() + " <span class='code-purple'>" +result[i][0].trim().toLowerCase() + "</span>;</br>";
+			sql += "<span class='code-orange line'>private</span> " + result[i][1].trim() + " <span class='code-purple'>" +result[i][0].trim().toLowerCase() + "</span>;</br>";
 		}
 
 		if (result[i][4]) {
@@ -46,6 +46,8 @@ function generator(result, projeto, classe, tabela){
 	sql += "}"
 
 	cabecalho = '<span class="code-orange">package</span> br.com.'+projeto+'.model;</br></br>'+
+          '<span class="code-orange">import</span> br.com.fiscobase.persistence.JoinColumn;</br>'+
+		  '<span class="code-orange">import</span> br.com.fiscobase.persistence.PrimaryKeys;</br>'+
 		  '<span class="code-orange">import</span> br.com.fiscobase.persistence.Table;</br>'+
 	      '<span class="code-orange">import</span> lombok.Data;</br></br>'+
 		  '<span class="code-yellow">@Data</span></br>'+
