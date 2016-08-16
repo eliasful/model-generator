@@ -3,6 +3,7 @@ var express = require('express');
 var router = express.Router();
 var firebird = require('node-firebird');
 
+
 var options = {};
 
 options.host = config.host;
@@ -15,6 +16,121 @@ options.pageSize = config.pageSize;
 
 String.prototype.capitalizeFirstLetter = function() {
     return this.charAt(0).toUpperCase() + this.slice(1).toLowerCase();
+}
+
+function generetorHTML(result, projeto, classe, tabela){
+	classe = classe.capitalizeFirstLetter();
+	var cabecalho = '<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>\n'+
+					'<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>\n'+
+					'<%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>\n'+
+					'<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>\n'+
+					'<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>\n'+
+					'<!-- MODAL CADASTRA '+classe+' -->\n'+
+					'<div class="modal fade" id="modalCadastra'+classe+'" role="dialog" aria-labelledby="exampleModalLabel"'+
+					' aria-hidden="true" data-keyboard="false" data-backdrop="static">\n'+
+					'    <div class="modal-dialog modal-lg">\n'+
+					'        <div class="modal-content">\n'+
+					'            <div class="modal-header">\n'+
+					'               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span'+
+					'                        aria-hidden="true">&times;</span></button>\n'+
+					'                <h4 class="modal-title">Cadastrar '+classe+'</h4>\n'+
+					'            </div>\n'+
+					'            <div class="modal-body">\n'+ 
+					'				<form:form id="formCadastra'+classe+'">\n'+
+	                '    				<div class="row">\n';
+    for (var i = 0; i < result.length; i++) {
+    	if (result[i][19]) {
+			cabecalho += '<!-- '+result[i][2]+' -->\n'+
+			'<div class="form-group">\n'+
+				'<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">\n'+
+					'<label for="'+result[i][2].trim().toLowerCase()+'" class="control-label">'+result[i][3]+' <span '+
+						'class="campo-required">&bullet;</span></label>\n'+
+					'<div class="input-group">\n'+
+						'<select data-value="${empregado.pessoa.idpess}"\n'+
+							'data-text="${empregado.pessoa.nome}"\n'+
+							'class="js-example-basic-single select form-control autoselect"\n'+
+							'name="'+classe+'['+result[i][2].trim().toLowerCase()+']" id="'+result[i][2].trim().toLowerCase()+'">\n'+
+						'</select>\n'+
+						'<span class="input-group-btn">\n'+
+							'<button class="btn btn-default btnInputSearch" type="button"\n'+
+								'onclick="empregados.incluirPessoa()">\n'+
+								'<i class="glyphicon glyphicon-plus inputIcon"></i>\n'+
+							'</button>\n'+
+						'</span>\n'+
+					'</div>\n'+
+				'</div>\n'+
+			'</div>\n';
+    	}else {
+			cabecalho += 
+				'<!-- '+result[i][2]+' -->\n'+
+                '<div class="form-group">\n'+
+                    '<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">\n'+
+                        '<label for="'+result[i][2].trim().toLowerCase()+'" class="control-label">'+result[i][3]+'</label>\n';
+                        switch(result[i][8]){
+                        	case 'INTEIRO':
+                        		cabecalho += 
+                        		'<input type="text" name="'+result[i][2].trim().toLowerCase()+
+                        		'" id="'+result[i][2].trim().toLowerCase()+'" maxlength="'+result[i][9]+
+                        		'" class="form-control" placeholder="'+result[i][6]+
+                        		'" onkeypress="return somenteNumeros(event)"' +
+                        		' value="${empregado.ctpsserie}"/>\n';
+                        		break;
+                        	case 'DATA':
+                        		cabecalho += 
+                        		'<div class="input-group date" id="'+result[i][2].trim().toLowerCase()+'Div">'+
+                                    '<input type="text" id="'+result[i][2].trim().toLowerCase()+
+                                    '" name="'+result[i][2].trim().toLowerCase()+
+                                    '" class="form-control value="<fmt:formatDate value="${empregado.dtadmissao}" pattern="dd/MM/yyyy"/>"'+
+                                          ' placeholder="'+result[i][6]+'" required>'+
+                                    '<span class="input-group-addon">'+
+                                       ' <span class="glyphicon glyphicon-calendar"></span>'+
+                                    '</span>'+
+                                '</div>';
+                        		break;
+                        	case 'CHARCOMBO':
+                        		cabecalho += 
+                        		'<select class="form-control" id="'+result[i][2].trim().toLowerCase()+
+                        		'" name="'+result[i][2].trim().toLowerCase()+'" required'+
+                                       ' value="'+result[i][16]+'">';
+                                       var split = result[i][12].split(';');
+                                       for (var j = split.length - 1; j >= 0; j--) {
+             								var valor = split[j].substr(0, result[i][9]);
+             								if (result[i][16] == valor) 
+             									cabecalho += '<option value="'+valor+'" selected>'+split[j]+'</option>';
+                                       		else
+                                       			cabecalho += '<option value="'+valor+'">'+split[j]+'</option>';
+                                       }
+
+                                cabecalho += '</select>';
+                        		break;
+                        	default:
+                        		cabecalho += 
+                        		'<input type="text" class="form-control" id="'+result[i][2].trim().toLowerCase()+'"'+
+                                       'placeholder="'+result[i][6]+'"'+
+                                       'name="'+result[i][2].trim().toLowerCase()+'" maxlength="40" />';
+                        		break;
+                        }
+					cabecalho +=    
+                    '</div>\n'+
+                '</div>\n';
+    	}
+    }
+	cabecalho +='     			</div>\n'+
+			    '				</form:form>\n'+
+				'			</div>\n'+
+				'            <div class="modal-footer">\n'+
+				'                <button type="button" class="btn btn-default" data-dismiss="modal">\n'+
+				'                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancelar\n'+
+				'                </button>\n'+
+				'                <button type="submit" class="btn btn-default" id="btn'+classe+'">\n'+
+				'                    <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Cadastrar\n'+
+				'                </button>\n'+
+				'            </div>\n'+
+				'        </div>\n'+
+				'    </div>\n'+
+				'</div>';
+
+	return cabecalho;
 }
 
 function generator(result, projeto, classe, tabela){
@@ -131,11 +247,28 @@ router.route('/gerar')
 		"AND RRF.RDB$RELATION_NAME='"+(req.query.tabela).toUpperCase()+"' " +
         " ORDER BY RRF.RDB$FIELD_POSITION ";
 
+        
+
 	   db.execute(code, function(err, result) {
 	   		var sql = generator(result, req.query.projeto, req.query.classe, req.query.tabela);
-	   		res.send(sql);
-	        db.detach();
+	   		
+			res.send(sql);
+			db.detach();
 	    })
+
+	   	var sqlHtml = "SELECT * FROM PCOLUNAS WHERE TABELA = '"+(req.query.tabela).toUpperCase()+"'";
+
+		db.execute(sqlHtml, function(err, result){
+			var html = generetorHTML(result, req.query.projeto, req.query.classe, req.query.tabela);
+			var fs = require('fs');
+			fs.writeFile(req.query.classe+".jsp", html, function(err) {
+				if(err) {
+					console.log(err);
+				} else {
+					console.log("The file was saved!");
+				}
+			}); 
+		});
 	});
   })
 
