@@ -39,14 +39,32 @@ function generetorHTML(result, projeto, classe, tabela){
 					'				<form:form id="formCadastra'+classe+'">\n'+
 	                '    				<div class="row">\n';
     for (var i = 0; i < result.length; i++) {
-    	if (result[i][19]) {
+    	var required = ' ';
+		var bullet = ' ';
+		var tamanho = 6;
+
+		if (result[i][26] != 'N') {
+			required = "required";
+			bullet = "<span class='campo-required'>&bullet;</span>";
+		}else {
+			required = ' ';
+			bullet = ' ';	
+		}
+
+		if (i == 0) 
+			tamanho = 2;
+		if (i == 1)
+			tamanho = 10
+
+
+    	if (result[i][19]) {   		
+
 			cabecalho += '<!-- '+result[i][2]+' -->\n'+
-			'<div class="form-group">\n'+
-				'<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">\n'+
-					'<label for="'+result[i][2].trim().toLowerCase()+'" class="control-label">'+result[i][3]+' <span '+
-						'class="campo-required">&bullet;</span></label>\n'+
+
+				'<div class="col-lg-'+tamanho+' col-md-'+tamanho+' col-sm-6 col-xs-6">\n'+
+					'<label for="'+result[i][2].trim().toLowerCase()+'" class="control-label">'+result[i][3] +  bullet +' </label>\n'+
 					'<div class="input-group">\n'+
-						'<select data-value="${empregado.pessoa.idpess}"\n'+
+						'<select data-value="${empregado.pessoa.idpess}" '+required+' \n'+
 							'data-text="${empregado.pessoa.nome}"\n'+
 							'class="js-example-basic-single select form-control autoselect"\n'+
 							'name="'+classe+'['+result[i][2].trim().toLowerCase()+']" id="'+result[i][2].trim().toLowerCase()+'">\n'+
@@ -58,14 +76,13 @@ function generetorHTML(result, projeto, classe, tabela){
 							'</button>\n'+
 						'</span>\n'+
 					'</div>\n'+
-				'</div>\n'+
-			'</div>\n';
+				'</div>\n';
     	}else {
+    		var required = result[i][25] == 'S' ? "required" : "";
 			cabecalho += 
 				'<!-- '+result[i][2]+' -->\n'+
-                '<div class="form-group">\n'+
-                    '<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">\n'+
-                        '<label for="'+result[i][2].trim().toLowerCase()+'" class="control-label">'+result[i][3]+'</label>\n';
+                    '<div class="col-lg-'+tamanho+' col-md-'+tamanho+' col-sm-12 col-xs-12">\n'+
+                        '<label for="'+result[i][2].trim().toLowerCase()+'" class="control-label">'+result[i][3] + ' ' +  bullet +'</label>\n';
                         switch(result[i][8]){
                         	case 'INTEIRO':
                         		cabecalho += 
@@ -73,14 +90,14 @@ function generetorHTML(result, projeto, classe, tabela){
                         		'" id="'+result[i][2].trim().toLowerCase()+'" maxlength="'+result[i][9]+
                         		'" class="form-control" placeholder="'+result[i][6]+
                         		'" onkeypress="return somenteNumeros(event)"' +
-                        		' value="${empregado.ctpsserie}"/>\n';
+                        		' value="${empregado.ctpsserie}" '+required+'/>\n';
                         		break;
                         	case 'DATA':
                         		cabecalho += 
                         		'<div class="input-group date" id="'+result[i][2].trim().toLowerCase()+'Div">'+
                                     '<input type="text" id="'+result[i][2].trim().toLowerCase()+
-                                    '" name="'+result[i][2].trim().toLowerCase()+
-                                    '" class="form-control value="<fmt:formatDate value="${empregado.dtadmissao}" pattern="dd/MM/yyyy"/>"'+
+                                    '" name="'+result[i][2].trim().toLowerCase()+ 
+                                    '" '+required+' class="form-control value="<fmt:formatDate value="${empregado.dtadmissao}" pattern="dd/MM/yyyy"/>"'+
                                           ' placeholder="'+result[i][6]+'" required>'+
                                     '<span class="input-group-addon">'+
                                        ' <span class="glyphicon glyphicon-calendar"></span>'+
@@ -90,7 +107,7 @@ function generetorHTML(result, projeto, classe, tabela){
                         	case 'CHARCOMBO':
                         		cabecalho += 
                         		'<select class="form-control" id="'+result[i][2].trim().toLowerCase()+
-                        		'" name="'+result[i][2].trim().toLowerCase()+'" required'+
+                        		'" name="'+result[i][2].trim().toLowerCase() + '"' + required +
                                        ' value="'+result[i][16]+'">';
                                        var split = result[i][12].split(';');
                                        for (var j = split.length - 1; j >= 0; j--) {
@@ -107,12 +124,11 @@ function generetorHTML(result, projeto, classe, tabela){
                         		cabecalho += 
                         		'<input type="text" class="form-control" id="'+result[i][2].trim().toLowerCase()+'"'+
                                        'placeholder="'+result[i][6]+'"'+
-                                       'name="'+result[i][2].trim().toLowerCase()+'" maxlength="40" />';
+                                       'name="'+result[i][2].trim().toLowerCase()+'" '+required+' maxlength="40" />';
                         		break;
                         }
 					cabecalho +=    
-                    '</div>\n'+
-                '</div>\n';
+                    '</div>\n';
     	}
     }
 	cabecalho +='     			</div>\n'+
