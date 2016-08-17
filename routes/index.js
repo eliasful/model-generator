@@ -26,7 +26,7 @@ function generetorHTML(result, projeto, classe, tabela){
 					'<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>\n'+
 					'<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>\n'+
 					'<!-- MODAL CADASTRA '+classe+' -->\n'+
-					'<div class="modal fade" id="modalCadastra'+classe+'" role="dialog" aria-labelledby="exampleModalLabel"'+
+					'<div class="modal fade" id="modalCadastrar'+classe+'" role="dialog" aria-labelledby="exampleModalLabel"'+
 					' aria-hidden="true" data-keyboard="false" data-backdrop="static">\n'+
 					'    <div class="modal-dialog modal-lg">\n'+
 					'        <div class="modal-content">\n'+
@@ -36,99 +36,133 @@ function generetorHTML(result, projeto, classe, tabela){
 					'                <h4 class="modal-title">Cadastrar '+classe+'</h4>\n'+
 					'            </div>\n'+
 					'            <div class="modal-body">\n'+ 
-					'				<form:form id="formCadastra'+classe+'">\n'+
+					'				<form:form id="formCadastrar'+classe+'">\n'+
 	                '    				<div class="row">\n';
+    var js = 
+    	'var linha;'+
+		'var '+classe+' = {'+
+		    'formCadastrar: $("#formCadastrar'+classe+'"),'+
+		    '$modal: $("#modalCadastrar'+classe+'"),'+
+		    'incluir: function () {'+
+		        classe+'.$modal.modal("show");'+
+		    '},'+
+		    'editar: function (id) {'+
+		        'ajax'+classe+'.carregar(id);'+
+		         classe+'.$modal.modal("show");'+
+		    '},'+
+		    'fecharModal: function () {'+
+		         classe+'.$modal.modal("hide");'+
+		    '},'+
+		    'excluir: function (id) {'+
+		        'modalConfirm("", "Deseja realmente excluir '+classe+'?", "Sim", "Cancelar", function (result) {'+
+		            'if (result) {'+
+		                'ajax'+classe+'.excluir(id);'+
+		            '}'+
+		        '})'+
+		    '}'+
+		'};'+
+		'$(function () {'+
+		    '$("[data-toggle='+'tooltip'+']").tooltip();'+
+		    'ajax'+classe+'.listar();';
+
     for (var i = 0; i < result.length; i++) {
-    	var required = ' ';
-		var bullet = ' ';
-		var tamanho = 6;
+    	if (result[i][2] != 'ESTAB'){
+    		var required = ' ';
+			var bullet = ' ';
+			var tamanho = 6;
 
-		if (result[i][26] != 'N') {
-			required = "required";
-			bullet = "<span class='campo-required'>&bullet;</span>";
-		}else {
-			required = ' ';
-			bullet = ' ';	
-		}
+			if (result[i][26] != 'N') {
+				required = "required";
+				bullet = "<span class='campo-required'>&bullet;</span>";
+			}else {
+				required = ' ';
+				bullet = ' ';	
+			}
 
-		if (i == 0) 
-			tamanho = 2;
-		if (i == 1)
-			tamanho = 10
+			/*if (i == 0) 
+				tamanho = 2;
+			if (i == 1)
+				tamanho = 10;*/
 
 
-    	if (result[i][19]) {   		
+	    	if (result[i][19]) {   		
 
-			cabecalho += '<!-- '+result[i][2]+' -->\n'+
+				cabecalho += '<!-- '+result[i][2]+' -->\n'+
 
-				'<div class="col-lg-'+tamanho+' col-md-'+tamanho+' col-sm-6 col-xs-6">\n'+
-					'<label for="'+result[i][2].trim().toLowerCase()+'" class="control-label">'+result[i][3] +  bullet +' </label>\n'+
-					'<div class="input-group">\n'+
-						'<select data-value="${empregado.pessoa.idpess}" '+required+' \n'+
-							'data-text="${empregado.pessoa.nome}"\n'+
-							'class="js-example-basic-single select form-control autoselect"\n'+
-							'name="'+classe+'['+result[i][2].trim().toLowerCase()+']" id="'+result[i][2].trim().toLowerCase()+'">\n'+
-						'</select>\n'+
-						'<span class="input-group-btn">\n'+
-							'<button class="btn btn-default btnInputSearch" type="button"\n'+
-								'onclick="empregados.incluirPessoa()">\n'+
-								'<i class="glyphicon glyphicon-plus inputIcon"></i>\n'+
-							'</button>\n'+
-						'</span>\n'+
-					'</div>\n'+
-				'</div>\n';
-    	}else {
-    		var required = result[i][25] == 'S' ? "required" : "";
-			cabecalho += 
-				'<!-- '+result[i][2]+' -->\n'+
-                    '<div class="col-lg-'+tamanho+' col-md-'+tamanho+' col-sm-12 col-xs-12">\n'+
-                        '<label for="'+result[i][2].trim().toLowerCase()+'" class="control-label">'+result[i][3] + ' ' +  bullet +'</label>\n';
-                        switch(result[i][8]){
-                        	case 'INTEIRO':
-                        		cabecalho += 
-                        		'<input type="text" name="'+result[i][2].trim().toLowerCase()+
-                        		'" id="'+result[i][2].trim().toLowerCase()+'" maxlength="'+result[i][9]+
-                        		'" class="form-control" placeholder="'+result[i][6]+
-                        		'" onkeypress="return somenteNumeros(event)"' +
-                        		' value="${empregado.ctpsserie}" '+required+'/>\n';
-                        		break;
-                        	case 'DATA':
-                        		cabecalho += 
-                        		'<div class="input-group date" id="'+result[i][2].trim().toLowerCase()+'Div">'+
-                                    '<input type="text" id="'+result[i][2].trim().toLowerCase()+
-                                    '" name="'+result[i][2].trim().toLowerCase()+ 
-                                    '" '+required+' class="form-control value="<fmt:formatDate value="${empregado.dtadmissao}" pattern="dd/MM/yyyy"/>"'+
-                                          ' placeholder="'+result[i][6]+'" required>'+
-                                    '<span class="input-group-addon">'+
-                                       ' <span class="glyphicon glyphicon-calendar"></span>'+
-                                    '</span>'+
-                                '</div>';
-                        		break;
-                        	case 'CHARCOMBO':
-                        		cabecalho += 
-                        		'<select class="form-control" id="'+result[i][2].trim().toLowerCase()+
-                        		'" name="'+result[i][2].trim().toLowerCase() + '"' + required +
-                                       ' value="'+result[i][16]+'">';
-                                       var split = result[i][12].split(';');
-                                       for (var j = split.length - 1; j >= 0; j--) {
-             								var valor = split[j].substr(0, result[i][9]);
-             								if (result[i][16] == valor) 
-             									cabecalho += '<option value="'+valor+'" selected>'+split[j]+'</option>';
-                                       		else
-                                       			cabecalho += '<option value="'+valor+'">'+split[j]+'</option>';
-                                       }
+					'<div class="col-lg-'+tamanho+' col-md-'+tamanho+' col-sm-6 col-xs-6">\n'+
+						'<label for="'+result[i][2].trim().toLowerCase()+'" class="control-label">'+result[i][3] +  bullet +' </label>\n'+
+						'<div class="input-group">\n'+
+							'<select data-value="${empregado.pessoa.idpess}" '+required+' \n'+
+								'data-text="${empregado.pessoa.nome}"\n'+
+								'class="js-example-basic-single select form-control autoselect"\n'+
+								'name="'+classe+'['+result[i][2].trim().toLowerCase()+']" id="'+result[i][2].trim().toLowerCase()+'">\n'+
+							'</select>\n'+
+							'<span class="input-group-btn">\n'+
+								'<button class="btn btn-default btnInputSearch" type="button"\n'+
+									'onclick="empregados.incluirPessoa()">\n'+
+									'<i class="glyphicon glyphicon-plus inputIcon"></i>\n'+
+								'</button>\n'+
+							'</span>\n'+
+						'</div>\n'+
+					'</div>\n';
 
-                                cabecalho += '</select>';
-                        		break;
-                        	default:
-                        		cabecalho += 
-                        		'<input type="text" class="form-control" id="'+result[i][2].trim().toLowerCase()+'"'+
-                                       'placeholder="'+result[i][6]+'"'+
-                                       'name="'+result[i][2].trim().toLowerCase()+'" '+required+' maxlength="40" />';
-                        		break;
-                        }
-					cabecalho +=    
-                    '</div>\n';
+				js += 'autoCompleteSelect2("#'+result[i][2].trim().toLowerCase()+'", "/secured/cadastrosgerais/autoComplete/'+result[i][19].trim().toLowerCase()+'");'
+	    	}else {
+	    		var required = result[i][25] == 'S' ? "required" : "";
+				cabecalho += 
+					'<!-- '+result[i][2]+' -->\n'+
+	                    '<div class="col-lg-'+tamanho+' col-md-'+tamanho+' col-sm-12 col-xs-12">\n'+
+	                        '<label for="'+result[i][2].trim().toLowerCase()+'" class="control-label">'+result[i][3] + ' ' +  bullet +'</label>\n';
+	                        switch(result[i][8]){
+	                        	case 'INTEIRO':
+	                        		cabecalho += 
+	                        		'<input type="text" name="'+result[i][2].trim().toLowerCase()+
+	                        		'" id="'+result[i][2].trim().toLowerCase()+'" maxlength="'+result[i][9]+
+	                        		'" class="form-control" placeholder="'+result[i][6]+
+	                        		'" onkeypress="return somenteNumeros(event)"' +
+	                        		' value="${empregado.ctpsserie}" '+required+'/>\n';
+	                        		break;
+	                        	case 'DATA':
+	                        		cabecalho += 
+	                        		'<div class="input-group date" id="'+result[i][2].trim().toLowerCase()+'Div">'+
+	                                    '<input type="text" id="'+result[i][2].trim().toLowerCase()+
+	                                    '" name="'+result[i][2].trim().toLowerCase()+ 
+	                                    '" '+required+' class="form-control value="<fmt:formatDate value="${empregado.dtadmissao}" pattern="dd/MM/yyyy"/>"'+
+	                                          ' placeholder="'+result[i][6]+'" required>'+
+	                                    '<span class="input-group-addon">'+
+	                                       ' <span class="glyphicon glyphicon-calendar"></span>'+
+	                                    '</span>'+
+	                                '</div>';
+	                                js += 
+	                                	'$("#'+result[i][2].trim().toLowerCase()+'Div").datetimepicker({locale: "pt", format: "DD/MM/YYYY"});'
+    									 '$("#'+result[i][2].trim().toLowerCase()+'").mask("99/99/9999", {placeholder: "__/__/____"});'
+	                        		break;
+	                        	case 'CHARCOMBO':
+	                        		cabecalho += 
+	                        		'<select class="form-control" id="'+result[i][2].trim().toLowerCase()+
+	                        		'" name="'+result[i][2].trim().toLowerCase() + '"' + required +
+	                                       ' value="'+result[i][16]+'">';
+	                                       var split = result[i][12].split(';');
+	                                       for (var j = split.length - 1; j >= 0; j--) {
+	             								var valor = split[j].substr(0, result[i][9]);
+	             								if (result[i][16] == valor) 
+	             									cabecalho += '<option value="'+valor+'" selected>'+split[j]+'</option>';
+	                                       		else
+	                                       			cabecalho += '<option value="'+valor+'">'+split[j]+'</option>';
+	                                       }
+
+	                                cabecalho += '</select>';
+	                        		break;
+	                        	default:
+	                        		cabecalho += 
+	                        		'<input type="text" class="form-control" id="'+result[i][2].trim().toLowerCase()+'"'+
+	                                       'placeholder="'+result[i][6]+'"'+
+	                                       'name="'+result[i][2].trim().toLowerCase()+'" '+required+' maxlength="40" />';
+	                        		break;
+	                        }
+						cabecalho +=    
+	                    '</div>\n';
+	    	}
     	}
     }
 	cabecalho +='     			</div>\n'+
@@ -145,8 +179,34 @@ function generetorHTML(result, projeto, classe, tabela){
 				'        </div>\n'+
 				'    </div>\n'+
 				'</div>';
+    js +=     
+    	classe+'.formCadastrar.submit(function () {'+
+	        'ajax'+classe+'.cadastrar(linha);'+
+	         classe+'.fecharModal();'+
+	        'return false;'+
+	    '});'+
+	'});'+
+	'function operateFormatter'+classe+'(value, row, index) {'+
+	    'return ['+
+	        '"<a rel='+'tooltip'+' title='+'Editar'+' class='+'table-action editar'+' href='+'javascript:void(0)'+' title='+'Editar'+'>",'+
+	        '"<i class='+'fa fa-edit fa-grid'+'></i>",'+
+	        '"</a>",'+
+	        '"<a rel='+'tooltip'+' title='+'Excluir'+' class='+'table-action excluir'+' href='+'javascript:void(0)'+' title='+'Excluir'+'>",'+
+	        '"<i class='+'fa fa-remove fa-grid'+'></i>",'+
+	       ' "</a>"'+
+	    '].join("");'+
+	'}'+
+	'window.operateEvents'+classe+' = {'+
+	    '"click .excluir": function (e, value, row, index) {'+
+	       classe+'.excluir(row.idfator);'+
+	    '},'+
+	    '"click .editar": function (e, value, row, index) {'+
+	        classe+'.editar(row.idfator);'+
+	        'linha = index;'+
+	    '}'+
+	'};';
 
-	return cabecalho;
+	return cabecalho + "<script>" + js + "</script>";
 }
 
 function generator(result, projeto, classe, tabela){

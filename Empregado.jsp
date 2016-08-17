@@ -4,7 +4,7 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!-- MODAL CADASTRA Empregado -->
-<div class="modal fade" id="modalCadastraEmpregado" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+<div class="modal fade" id="modalCadastrarEmpregado" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -12,27 +12,10 @@
                 <h4 class="modal-title">Cadastrar Empregado</h4>
             </div>
             <div class="modal-body">
-				<form:form id="formCadastraEmpregado">
+				<form:form id="formCadastrarEmpregado">
     				<div class="row">
-<!-- ESTAB -->
-<div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">
-<label for="estab" class="control-label">Estab<span class='campo-required'>&bullet;</span> </label>
-<div class="input-group">
-<select data-value="${empregado.pessoa.idpess}" required 
-data-text="${empregado.pessoa.nome}"
-class="js-example-basic-single select form-control autoselect"
-name="Empregado[estab]" id="estab">
-</select>
-<span class="input-group-btn">
-<button class="btn btn-default btnInputSearch" type="button"
-onclick="empregados.incluirPessoa()">
-<i class="glyphicon glyphicon-plus inputIcon"></i>
-</button>
-</span>
-</div>
-</div>
 <!-- IDEMPREGADO -->
-<div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 <label for="idempregado" class="control-label">Empregado <span class='campo-required'>&bullet;</span></label>
 <input type="text" name="idempregado" id="idempregado" maxlength="10" class="form-control" placeholder="Código do Empregado" onkeypress="return somenteNumeros(event)" value="${empregado.ctpsserie}" />
 </div>
@@ -653,4 +636,4 @@ onclick="empregados.incluirPessoa()">
             </div>
         </div>
     </div>
-</div>
+</div><script>var linha;var Empregado = {formCadastrar: $("#formCadastrarEmpregado"),$modal: $("#modalCadastrarEmpregado"),incluir: function () {Empregado.$modal.modal("show");},editar: function (id) {ajaxEmpregado.carregar(id);Empregado.$modal.modal("show");},fecharModal: function () {Empregado.$modal.modal("hide");},excluir: function (id) {modalConfirm("", "Deseja realmente excluir Empregado?", "Sim", "Cancelar", function (result) {if (result) {ajaxEmpregado.excluir(id);}})}};$(function () {$("[data-toggle=tooltip]").tooltip();ajaxEmpregado.listar();autoCompleteSelect2("#idpess", "/secured/cadastrosgerais/autoComplete/rhpessoa");autoCompleteSelect2("#idtpadm", "/secured/cadastrosgerais/autoComplete/rhtpadmissao");autoCompleteSelect2("#idsind", "/secured/cadastrosgerais/autoComplete/rhsindicato");autoCompleteSelect2("#idvinc", "/secured/cadastrosgerais/autoComplete/rhvinculo");autoCompleteSelect2("#idturno", "/secured/cadastrosgerais/autoComplete/rhturno");autoCompleteSelect2("#idcateg", "/secured/cadastrosgerais/autoComplete/rhcategoria");autoCompleteSelect2("#idtabsal", "/secured/cadastrosgerais/autoComplete/rhtabsal");$("#dtadmissaoDiv").datetimepicker({locale: "pt", format: "DD/MM/YYYY"});$("#ctpsdataDiv").datetimepicker({locale: "pt", format: "DD/MM/YYYY"});$("#dtanueniosDiv").datetimepicker({locale: "pt", format: "DD/MM/YYYY"});$("#dtoptfgtsDiv").datetimepicker({locale: "pt", format: "DD/MM/YYYY"});$("#dtexperieDiv").datetimepicker({locale: "pt", format: "DD/MM/YYYY"});autoCompleteSelect2("#idfpas", "/secured/cadastrosgerais/autoComplete/rhfpas");autoCompleteSelect2("#idagencia", "/secured/cadastrosgerais/autoComplete/rhagencia");autoCompleteSelect2("#idvlrhrextdiu", "/secured/cadastrosgerais/autoComplete/rhvlrpadrao");autoCompleteSelect2("#idvlrhrextnot", "/secured/cadastrosgerais/autoComplete/rhvlrpadrao");autoCompleteSelect2("#idvlrmhrextdiu", "/secured/cadastrosgerais/autoComplete/rhvlrpadrao");autoCompleteSelect2("#idvlrmhrextnot", "/secured/cadastrosgerais/autoComplete/rhvlrpadrao");autoCompleteSelect2("#idtabanuenio", "/secured/cadastrosgerais/autoComplete/rhanuenios");autoCompleteSelect2("#idcurriculo", "/secured/cadastrosgerais/autoComplete/rhcurriculo");$("#dttransfDiv").datetimepicker({locale: "pt", format: "DD/MM/YYYY"});autoCompleteSelect2("#idopsaude", "/secured/cadastrosgerais/autoComplete/rhopsaude");$("#dtaposentadoriaDiv").datetimepicker({locale: "pt", format: "DD/MM/YYYY"});autoCompleteSelect2("#idoperdentaria", "/secured/cadastrosgerais/autoComplete/rhopsaude");$("#dttransoutempDiv").datetimepicker({locale: "pt", format: "DD/MM/YYYY"});autoCompleteSelect2("#idprocjudalvara", "/secured/cadastrosgerais/autoComplete/rhprocessojud");autoCompleteSelect2("#idinstituicao", "/secured/cadastrosgerais/autoComplete/rhinstituicao");autoCompleteSelect2("#idinstituicaoint", "/secured/cadastrosgerais/autoComplete/rhinstituicao");$("#dtterminoDiv").datetimepicker({locale: "pt", format: "DD/MM/YYYY"});autoCompleteSelect2("#idsupervisor", "/secured/cadastrosgerais/autoComplete/rhpessoa");Empregado.formCadastrar.submit(function () {ajaxEmpregado.cadastrar(linha);Empregado.fecharModal();return false;});});function operateFormatterEmpregado(value, row, index) {return ["<a rel=tooltip title=Editar class=table-action editar href=javascript:void(0) title=Editar>","<i class=fa fa-edit fa-grid></i>","</a>","<a rel=tooltip title=Excluir class=table-action excluir href=javascript:void(0) title=Excluir>","<i class=fa fa-remove fa-grid></i>", "</a>"].join("");}window.operateEventsEmpregado = {"click .excluir": function (e, value, row, index) {Empregado.excluir(row.idfator);},"click .editar": function (e, value, row, index) {Empregado.editar(row.idfator);linha = index;}};</script>
