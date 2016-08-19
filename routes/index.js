@@ -3,6 +3,7 @@ var express = require('express');
 var router = express.Router();
 var firebird = require('node-firebird');
 var fs = require('fs');
+var exec = require('child_process').exec;
 
 var options = {};
 
@@ -19,7 +20,7 @@ String.prototype.capitalizeFirstLetter = function () {
 }
 
 function generetorHTML(result, projeto, classe, tabela) {
-    classe = classe.capitalizeFirstLetter();
+    classe = classe.capitalizeFirstLetter().trim();
     var cabecalho =
         '<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>\n' +
         '<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>\n' +
@@ -75,7 +76,7 @@ function generetorHTML(result, projeto, classe, tabela) {
         'ajax' + classe + ' = {' +
           'cadastrar: function (linha) {' +
             '$.ajax({' +
-              'url: appUrl + "/secured/cadastrosespecificos/' + classe.toLowerCase() + '/",' +
+              'url: appUrl + "/secured/cadastros/' + classe.toLowerCase() + '/",' +
               'data: ' + classe + '.formCadastrar.serialize(),' +
               'type: "POST",' +
               'beforeSend: function () {' +
@@ -108,7 +109,7 @@ function generetorHTML(result, projeto, classe, tabela) {
         '},' +
         'excluir: function (id) {' +
           '$.ajax({' +
-            'url: appUrl + "/secured/cadastrosespecificos/' + classe.toLowerCase() + '/excluir/" + id,' +
+            'url: appUrl + "/secured/cadastros/' + classe.toLowerCase() + '/excluir/" + id,' +
             'type: "DELETE",' +
             'beforeSend: function () {' +
             'botaoLoad($("#btnCadastrar' +
@@ -195,7 +196,7 @@ function generetorHTML(result, projeto, classe, tabela) {
                   '   </span>\n' +
                   ' </div>\n' +
                   '</div>\n';
-              js += 'autoCompleteSelect2("#' + coluna + '", "/secured/cadastrosgerais/autoComplete/' + tabelaRelacao + '");'
+              js += 'autoCompleteSelect2("#' + coluna + '", "/secured/cadastros/autoComplete/' + tabelaRelacao + '");'
               carregaAjax += 'setTextSelect2("#' + coluna + '", data.' + coluna + '.idtecnica, data.' + coluna + '.descricao);';
           } else {
               cabecalho +=
@@ -299,13 +300,13 @@ function generetorHTML(result, projeto, classe, tabela) {
     '};';
   ajax +=
       'carregar: function (id) {' +
-        '$.getJSON(appUrl + "/secured/cadastrosgerais/' + classe.toLowerCase() + '/carregar/" + id, function (data) {' +
+        '$.getJSON(appUrl + "/secured/cadastros/' + classe.toLowerCase() + '/carregar/" + id, function (data) {' +
           'putResultVal(data, "#formCadastrar' + classe + '");' +
             carregaAjax +
           '});' +
         '},' +
       'listar: function () {' +
-        '$.getJSON(appUrl + "/secured/cadastrosespecificos/' + classe.toLowerCase() + '/listar.json", function (data) {' +
+        '$.getJSON(appUrl + "/secured/cadastros/' + classe.toLowerCase() + '/listar.json", function (data) {' +
           '$("#dados' + classe + 'Table").bootstrapTable({' +
             'data: data,' +
             'toolbar: ".toolbar' + classe + '",' +
@@ -344,19 +345,29 @@ function generetorHTML(result, projeto, classe, tabela) {
       '})' +
     '}' +
   '};';
-  fs.writeFile(classe + ".js", js, function (err) {
+
+  if (fs.existsSync(classe)){
+      exec('rm -r ' + classe, function (err, stdout, stderr) {
+        fs.mkdirSync(classe);
+      });
+  }else{
+    fs.mkdirSync(classe);
+  }
+
+
+  fs.writeFile(classe + "/" + classe.toLowerCase() + ".js", js, function (err) {
     if (err) {
         console.log("Erro ao gerar o arquivo!\n" + err);
     } else {
-        console.log("Arquivo .jsp gerado com sucesso!");
+        console.log("Arquivo .js gerado com sucesso!");
     }
   });
 
-  fs.writeFile("ajax" + classe + ".js", ajax, function (err) {
+  fs.writeFile(classe + "/" + "ajax.js", ajax, function (err) {
     if (err) {
         console.log("Erro ao gerar o arquivo!\n" + err);
     } else {
-        console.log("Arquivo .jsp gerado com sucesso!");
+        console.log("Ajax gerado com sucesso!");
     }
   });
 
@@ -364,6 +375,7 @@ function generetorHTML(result, projeto, classe, tabela) {
 }
 
 function generator(result, projeto, classe, tabela) {
+    classe = classe.capitalizeFirstLetter().trim();
     var sql = "";
     var cabecalho = "";
     var pk = "";
@@ -450,6 +462,51 @@ function generator(result, projeto, classe, tabela) {
   return cabecalho + sql;
 }
 
+function generetorService(projeto, classe){
+  classe = classe.capitalizeFirstLetter().trim();
+  var service =
+    'package br.com.'+classe+'.service;\n'+
+    'import br.com.fiscobase.repository.GenericVsRepository;\n'+
+    'import br.com.'+classe+'.model.'+classe+';\n'+
+    'public interface '+classe+'Service extends GenericVsRepository<'+classe+'> {\n'+
+    '}';
+}
+
+function generetorService(projeto, classe){
+  classe = classe.capitalizeFirstLetter().trim();
+  var service =
+    'package br.com.'+projeto.toLowerCase()+'.service;\n'+
+    'import br.com.fiscobase.repository.GenericVsRepository;\n'+
+    'import br.com.'+projeto.toLowerCase()+'.model.'+classe.toLowerCase()+';\n'+
+    'public interface '+classe+'Service extends GenericVsRepository<'+classe+'> {\n'+
+    '}';
+  return service;
+}
+
+function generetorServiceImpl(projeto, classe){
+  classe = classe.capitalizeFirstLetter().trim();
+  var impl =
+    'package br.com.'+projeto.toLowerCase()+'.service.impl;\n'+
+    'import br.com.fiscobase.repository.impl.GenericVsRepositoryImpl;\n'+
+    'import br.com.'+projeto.toLowerCase()+'.model.'+classe.toLowerCase()+';\n'+
+    'import br.com.'+projeto.toLowerCase()+'.service.'+classe.toLowerCase()+'Service;\n'+
+    'import org.springframework.stereotype.Service;\n'+
+    '@Service\n'+
+    'public class '+classe+'ServiceImpl extends GenericVsRepositoryImpl<'+classe+'> implements '+classe+'Service {\n'+
+    '}';
+  return impl;
+}
+
+function gerarArquivo(caminho, conteudo){
+  fs.writeFile(caminho, conteudo, function (err) {
+      if (err) {
+          console.log("Erro ao gerar o arquivo!\n" + err);
+      } else {
+          console.log("Arquivo gerado com sucesso!");
+      }
+  });
+}
+
 router.route('/')
     .get(function (req, res) {
         res.render('index', {title: 'Model Generator', options: options});
@@ -481,16 +538,17 @@ router.route('/gerar')
                 console.log(err);
                 res.send(err);
               }else{
+                classe = classe.capitalizeFirstLetter().trim();
                 var java = generator(result, projeto, classe, tabela);
                 var html = generetorHTML(result, projeto, classe, tabela);
+                var service = generetorService(projeto, classe);
+                var serviceImpl = generetorServiceImpl(projeto, classe);
 
-                fs.writeFile(classe + ".jsp", html, function (err) {
-                    if (err) {
-                        console.log("Erro ao gerar o arquivo!\n" + err);
-                    } else {
-                        console.log("Arquivo .jsp gerado com sucesso!");
-                    }
-                });
+                gerarArquivo(classe + "/" + classe + ".java", java);
+                gerarArquivo(classe + "/" + classe + "Service.java", service);
+                gerarArquivo(classe + "/" + classe + "ServiceImpl.java", serviceImpl);
+                gerarArquivo(classe + "/" + classe.toLowerCase() + ".jsp", html);
+
                 res.send(java);
                 db.detach();
               }
@@ -519,7 +577,7 @@ router.route('/config')
               console.log("Erro ao gerar o arquivo!\n" + err);
           } else {
               res.sendStatus(200);
-              console.log("Arquivo .jsp gerado com sucesso!");
+              console.log("config gerado com sucesso!");
           }
         });
     })

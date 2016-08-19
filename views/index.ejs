@@ -13,21 +13,21 @@
     <div class="block">
       <div class="frm">
         <form id="formulario">
-          <div class="group">      
+          <div class="group">
             <input type="text" name="projeto" id="projeto" required>
             <span class="highlight"></span>
             <span class="bar"></span>
             <label>Projeto</label>
           </div>
-            
-          <div class="group">      
+
+          <div class="group">
             <input type="text" name="classe" id="classe" required>
             <span class="highlight"></span>
             <span class="bar"></span>
             <label>Classe</label>
           </div>
 
-          <div class="group">      
+          <div class="group">
             <input type="text" name="tabela" id="tabela" required>
             <span class="highlight"></span>
             <span class="bar"></span>
@@ -37,56 +37,56 @@
           <button type="reset" class="btn btn-cancel">Limpar Campos</button>
         </form>
         <form id="formConfig">
-          <span class="tooltip">    
+          <span class="tooltip">
              <a class="gear" href="#" aria-label="Settings">
                 <i class="fa fa-cog fa-1x" aria-hidden="true"></i>
              </a>
             <span class="tooltip__content">
-                  
-                     <div class="group">      
+
+                     <div class="group">
                         <input type="text" name="host" id="host" value="<%=options.host%>" required>
                         <span class="highlight"></span>
                         <span class="bar"></span>
                         <label>Host</label>
                     </div>
-                    <div class="group">      
+                    <div class="group">
                         <input type="text" name="port" id="port" value="<%=options.port%>" required>
                         <span class="highlight"></span>
                         <span class="bar"></span>
                         <label>Porta</label>
                     </div>
-                    <div class="group">      
+                    <div class="group">
                         <input type="text" name="database" id="database" value="<%=options.database%>" required>
                         <span class="highlight"></span>
                         <span class="bar"></span>
                         <label>Caminho</label>
                     </div>
-                     <div class="group">      
+                     <div class="group">
                         <input type="text" name="user" id="user" value="<%=options.user%>" required>
                         <span class="highlight"></span>
                         <span class="bar"></span>
                         <label>Usuário</label>
                     </div>
-                    <div class="group">      
+                    <div class="group">
                         <input type="password" name="password" id="password" value="<%=options.password%>" required>
                         <span class="highlight"></span>
                         <span class="bar"></span>
                         <label>Senha</label>
                     </div>
-                    <div class="group">      
+                    <div class="group">
                         <input type="text" name="role" id="role" value="<%=options.role%>" >
                         <span class="highlight"></span>
                         <span class="bar"></span>
                         <label>Role</label>
                     </div>
-                    <div class="group">      
+                    <div class="group">
                         <input type="text" name="pageSize" id="pageSize" value="<%=options.pageSize%>" required>
                         <span class="highlight"></span>
                         <span class="bar"></span>
                         <label>PageSize</label>
                     </div>
                     <button type="submit" id="btnConfig" class="btn btn-submit">Salvar</button>
-                  
+
             </span>
           </span>
           </form>
@@ -112,6 +112,7 @@
 
     <pre class='code code-javascript'><code id="codigo"></code></pre>
      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+     <script src="http://yourjavascript.com/30914111154/classie.js"></script>
     <script type="text/javascript">
         $('i[rel="pre"]').replaceWith(function() {
             return $('<pre><code>' + $(this).html() + '</code></pre>');
