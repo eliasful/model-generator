@@ -1,0 +1,4 @@
+<group name="rhapp_treinamento">
+   <js>/resources/scripts/rhapp/treinamento/ajax.js</js>
+   <js>/resources/scripts/rhapp/treinamento/treinamento.js</js>
+</group>

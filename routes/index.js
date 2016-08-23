@@ -40,7 +40,7 @@ router.route('/gerar')
             var projeto = req.query.projeto;
             var classe = req.query.classe;
             var sql =
-                " SELECT " +
+                " SELECT DISTINCT" +
                 " C.TABELA, C.COLUNA, C.DESCCOMP, " +
                 " C.DESCRED, C.DESCTEC, C.HINT, " +
                 " C.TIPO, C.INTEIRAS, C.DECIMAIS, " +
@@ -51,7 +51,7 @@ router.route('/gerar')
                 " FROM PCOLUNAS C " +
                 " LEFT JOIN PINDICES I ON " +
                 " (C.TABELA = I.TABELA) " +
-                " WHERE C.TABELA = '" + tabela.toUpperCase() + "'";
+                " WHERE C.TABELA = '" + tabela.toUpperCase() + "' ORDER BY C.SEQUENCIA";
 
             db.execute(sql, function(err, result) {
                 if (err) {
@@ -61,8 +61,9 @@ router.route('/gerar')
                     classe = classe.capitalizeFirstLetter().trim();
                     fs.mkdir(classe, function(err){
                         if (err){
-                            fs.rmdir(classe);
-                            fs.mkdir(classe);
+                            fs.rmdir(classe, function(){
+                              fs.mkdir(classe);
+                            });
                         }
 
                         var java = generatorJava.generator(result, projeto, classe, tabela);
@@ -74,17 +75,21 @@ router.route('/gerar')
 
                         var wro =
                         '<group name="'+ projeto.toLowerCase() +'_'+ classe.toLowerCase() +'">\n'+
-                        '   <js>/resources/scripts/rhppp/'+ classe.toLowerCase() +'/ajax.js</js>\n'+
-                        '   <js>/resources/scripts/rhppp/'+ classe.toLowerCase() +'/'+ classe.toLowerCase() +'.js</js>\n'+
+                        '   <js>/resources/scripts/'+ projeto.toLowerCase() +'/'+ classe.toLowerCase() +'/ajax.js</js>\n'+
+                        '   <js>/resources/scripts/'+ projeto.toLowerCase() +'/'+ classe.toLowerCase() +'/'+ classe.toLowerCase() +'.js</js>\n'+
                         '</group>';
 
+                        var header =
+                        '<li><a href="${appUrl}/secured/cadastros/'+classe.toLowerCase()+'">'+classe+'</a></li>'
+
                         generatorArchive.generator(classe + "/wro.xml", wro);
+                        generatorArchive.generator(classe + "/header.jsp", header);
                         generatorArchive.generator(classe + "/" + classe + ".java", java);
                         generatorArchive.generator(classe + "/" + classe + "Controller.java", controller);
                         generatorArchive.generator(classe + "/" + classe + "Service.java", service);
                         generatorArchive.generator(classe + "/" + classe + "ServiceImpl.java", serviceImpl);
-                        generatorArchive.generator(classe + "/model" + classe.capitalizeFirstLetter() + ".jsp", html);
-                        generatorArchive.generator(classe + "/" + classe.capitalizeFirstLetter() + ".jsp", htmlLista);
+                        generatorArchive.generator(classe + "/modal" + classe.capitalizeFirstLetter() + ".jsp", html);
+                        generatorArchive.generator(classe + "/" + classe.toLowerCase() + ".jsp", htmlLista);
 
                         res.send(java);
                         db.detach();

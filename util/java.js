@@ -24,9 +24,11 @@ module.exports = {
             //Verifica se a tabela possui as letras rh no inicio, para posteriormente serem usadas como classe, no java
             var tabelaRelacao = result[i][14];
             if (tabelaRelacao)
-                if (tabelaRelacao.substr(0, 2).toLowerCase() == 'rh')
+                if (tabelaRelacao.substr(0, 2).toLowerCase() == 'rh') {
                     tabelaRelacao = tabelaRelacao.substr(2, tabelaRelacao.length).capitalizeFirstLetter();
-                else
+                    if (tabelaRelacao.substr(0, 1).toLowerCase() == 'w')
+                        tabelaRelacao = tabelaRelacao.substr(1, tabelaRelacao.length).capitalizeFirstLetter();
+                } else
                     tabelaRelacao = tabelaRelacao.capitalizeFirstLetter();
 
             if (result[i][16])
@@ -63,6 +65,12 @@ module.exports = {
                         tipos = 'String';
                         break;
                     case 'MEMO PURO':
+                        tipos = 'String';
+                        break;
+                    case 'DATAHORA':
+                        tipos = 'Date';
+                        break;
+                    case 'BLOB':
                         tipos = 'String';
                         break;
                     default:

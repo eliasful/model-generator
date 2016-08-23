@@ -39,9 +39,9 @@ module.exports = {
             '    @RequestMapping(value = "/", method = RequestMethod.POST)\n' +
             '    public String salvar(' + classe + ' ' + classe.toLowerCase() + '){\n' +
             '        try {\n' +
-            '            if (' + classe + ' == null) return null;\n' +
+            '            if (' + classe.toLowerCase() + ' == null) return null;\n' +
             '            Integer id = ' + classe.toLowerCase() + 'Service.save(' + classe.toLowerCase() + ');\n' +
-            '            ' + classe + '.setId' + classe.toLowerCase() + '(id)\n' +
+            '            ' + classe.toLowerCase() + '.setId' + classe.toLowerCase() + '(id)\n' +
             '            return new Gson().toJson(' + classe.toLowerCase() + ');\n' +
             '        }catch (Exception e){\n' +
             '            e.printStackTrace();\n' +
