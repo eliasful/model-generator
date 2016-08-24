@@ -1,1 +1,0 @@
-<li><a href="${appUrl}/secured/cadastros/treinamento">Treinamento</a></li>

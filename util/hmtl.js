@@ -1,8 +1,8 @@
-module.exports = {
+module.exports                                = {
     generator: function(result, projeto, classe, tabela) {
-        var generetorArchive = require('../util/archive');
-        classe = classe.capitalizeFirstLetter().trim();
-        var cabecalho =
+        var generetorArchive                  = require('../util/archive');
+        classe                                = classe.capitalizeFirstLetter().trim();
+        var cabecalho                         =
             '<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>\n' +
             '<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>\n' +
             '<%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>\n' +
@@ -21,7 +21,7 @@ module.exports = {
             '				<form:form id="formCadastrar' + classe + '">\n' +
             '            <div class="modal-body">\n' +
             '    				<div class="row">\n';
-        var js =
+        var js                                =
             'var linha;' +
             'var ' + classe + ' = {' +
             ' formCadastrar: $("#formCadastrar' + classe + '"),' +
@@ -55,66 +55,66 @@ module.exports = {
 
 
 
-        var carregaAjax = "";
-        var chave = [];
-        var dataAjax = "";
-        for (var i = 0; i < result.length; i++) {
-            var coluna = result[i][1].trim().toLowerCase();
-            var descricaoCompleta = result[i][2];
-            var descricaoTecnica = result[i][4];
-            var hint = result[i][5];
-            var tipo = result[i][6];
-            var inteiras = result[i][7];
-            var decimais = result[i][8];
+        var carregaAjax                       = "";
+        var chave                             = [];
+        var dataAjax                          = "";
+        for (var i                            = 0; i < result.length; i++) {
+            var coluna                        = result[i][1].trim().toLowerCase();
+            var descricaoCompleta             = result[i][2];
+            var descricaoTecnica              = result[i][4];
+            var hint                          = result[i][5];
+            var tipo                          = result[i][6];
+            var inteiras                      = result[i][7];
+            var decimais                      = result[i][8];
             //dividindo os itens
             if (result[i][9])
-                var itemSelect = (result[i][9]).split(';');
-            var mascara = result[i][10];
-            var valorPadrao = result[i][13];
+                var itemSelect                = (result[i][9]).split(';');
+            var mascara                       = result[i][10];
+            var valorPadrao                   = result[i][13];
 
             //Verifica se a tabela possui as letras rh e rhw no inicio, para posteriormente serem usadas como classe, no java
-            var tabelaRelacao = result[i][14];
+            var tabelaRelacao                 = result[i][14];
             if (tabelaRelacao)
                 if (tabelaRelacao.substr(0, 2).toLowerCase() === 'rh') {
-                    tabelaRelacao = tabelaRelacao.substr(2, tabelaRelacao.length);
+                    tabelaRelacao             = tabelaRelacao.substr(2, tabelaRelacao.length);
                     if (tabelaRelacao.substr(0, 1).toLowerCase() === 'w'){
-                        tabelaRelacao = tabelaRelacao.substr(1, tabelaRelacao.length).capitalizeFirstLetter();
+                        tabelaRelacao         = tabelaRelacao.substr(1, tabelaRelacao.length).capitalizeFirstLetter();
                       }
                     else
-                        tabelaRelacao = tabelaRelacao.substr(2, tabelaRelacao.length).capitalizeFirstLetter();
+                        tabelaRelacao         = tabelaRelacao.substr(2, tabelaRelacao.length).capitalizeFirstLetter();
                 } else
-                    tabelaRelacao = tabelaRelacao.capitalizeFirstLetter();
+                    tabelaRelacao             = tabelaRelacao.capitalizeFirstLetter();
 
 
 
-            var chaveRelacao = "";
+            var chaveRelacao                  = "";
             if (result[i][16])
-                chaveRelacao = result[i][16].toLowerCase();
-            var obrigatorio = result[i][18];
-            var guia = result[i][19];
+                chaveRelacao                  = result[i][16].toLowerCase();
+            var obrigatorio                   = result[i][18];
+            var guia                          = result[i][19];
 
             //separando as chaves primarias por virgula
-            chave = (result[i][20]).split(';');
-            var chaves = undefined;
+            chave                             = (result[i][20]).split(';');
+            var chaves                        = undefined;
 
-            if (coluna != "estab") {
-                var required = ' ';
-                var bullet = ' ';
-                var tamanho = 6;
+            if (coluna                       != "estab") {
+                var required                  = ' ';
+                var bullet                    = ' ';
+                var tamanho                   = 6;
 
-                if (obrigatorio != 'N') {
-                    required = 'required';
-                    bullet = '<span class="campo-required">&bullet;</span>';
+                if (obrigatorio              != 'N') {
+                    required                  = 'required';
+                    bullet                    = '<span class="campo-required">&bullet;</span>';
                 } else {
-                    required = ' ';
-                    bullet = ' ';
+                    required                  = ' ';
+                    bullet                    = ' ';
                 }
 
                 //verifica se o campo atual, possui relação com alguma tabela,
                 //se tiver, então é criado o autocomplete,
                 //se não é verificado o tipo do campo e criado de acordo com o tipo (número, select, text e etc).
-                if (tabelaRelacao != null) {
-                    cabecalho += '<!-- ' + coluna + ' -->\n' +
+                if (tabelaRelacao            != null) {
+                    cabecalho                += '<!-- ' + coluna + ' -->\n' +
                         '<div class="col-lg-' + tamanho + ' col-md-' + tamanho + ' col-sm-6 col-xs-6">\n' +
                         '<label for="' + coluna + '" class="control-label">' + descricaoTecnica + bullet + ' </label>\n' +
                         ' <div class="input-group">\n' +
@@ -131,26 +131,26 @@ module.exports = {
                         '   </span>\n' +
                         ' </div>\n' +
                         '</div>\n';
-                    js += 'autoCompleteSelect2("#' + coluna + '", "/secured/cadastros/autoComplete/' + tabelaRelacao + '");'
-                    carregaAjax += 'setTextSelect2("#' + coluna + '", data.' + coluna + '.idtecnica, data.' + coluna + '.descricao);';
-                    dataAjax += '           "' + coluna.toLowerCase() + '": result.' + tabelaRelacao.toLowerCase() + '.' + coluna.toLowerCase() + ',\n';
+                    js                       += 'autoCompleteSelect2("#' + coluna + '", "/secured/cadastros/autoComplete/' + tabelaRelacao + '");'
+                    carregaAjax              += 'setTextSelect2("#' + coluna + '", data.' + coluna + '.idtecnica, data.' + coluna + '.descricao);';
+                    dataAjax                 += '           "' + coluna.toLowerCase() + '": result.' + tabelaRelacao.toLowerCase() + '.' + coluna.toLowerCase() + ',\n';
                 } else {
-                    var valorID = "'' ";
+                    var valorID               = "'' ";
                     if ((coluna.toLowerCase() === chave[0].toLowerCase() || coluna === chave[1])) {
-                        valorID = '"0" readonly';
-                        tamanho = 2;
+                        valorID               = '"0" readonly';
+                        tamanho               = 2;
                     } else {
-                        valorID = "'' ";
-                        tamanho = 10;
+                        valorID               = "'' ";
+                        tamanho               = 10;
                     }
-                    dataAjax += '           "' + coluna.toLowerCase() + '": result.' + coluna.toLowerCase() + ',\n';
-                    cabecalho +=
+                    dataAjax                 += '           "' + coluna.toLowerCase() + '": result.' + coluna.toLowerCase() + ',\n';
+                    cabecalho                +=
                         '<!-- ' + coluna + ' -->\n' +
                         '<div class="col-lg-' + tamanho + ' col-md-' + tamanho + ' col-sm-12 col-xs-12">\n' +
                         '<label for="' + coluna + '" class="control-label">' + descricaoTecnica + ' ' + bullet + '</label>\n';
                     switch (tipo) {
                         case 'INTEIRO':
-                            cabecalho +=
+                            cabecalho        +=
                                 '<input value=' + valorID + ' type="text" name="' + coluna +
                                 '" id="' + coluna + '" maxlength="' + inteiras +
                                 '" class="form-control" placeholder="' + hint +
@@ -158,7 +158,7 @@ module.exports = {
                                 ' ' + required + '/>\n';
                             break;
                         case 'DATA':
-                            cabecalho +=
+                            cabecalho        +=
                                 '<div class="input-group date" id="' + coluna + 'Div">' +
                                 '<input type="text" id="' + coluna +
                                 '" name="' + coluna +
@@ -168,18 +168,18 @@ module.exports = {
                                 ' <span class="glyphicon glyphicon-calendar"></span>' +
                                 '</span>' +
                                 '</div>';
-                            js +=
+                            js               +=
                                 '$("#' + coluna + 'Div").datetimepicker({locale: "pt", format: "DD/MM/YYYY"});'
                             '$("#' + coluna + '").mask("99/99/9999", {placeholder: "__/__/____"});'
                             break;
                         case 'CHARCOMBO':
-                            cabecalho +=
+                            cabecalho        +=
                                 '<select class="form-control" id="' + coluna +
                                 '" name="' + coluna + '"' + required + '">';
                             //inserindo as opções no select
                             for (data in itemSelect) {
                                 //pega o valor padrão, caso não esteja marcado
-                                var valor = itemSelect[data].substr(0, inteiras);
+                                var valor     = itemSelect[data].substr(0, inteiras);
                                 //verifica se o valor gerado é igual ao valor padrão
                                 //se for adiciona a opção selecionado
                                 if (valorPadrao == valor)
@@ -188,21 +188,21 @@ module.exports = {
                                     cabecalho += '<option value="' + valor + '">' + valorPadrao + '</option>';
                             }
 
-                            cabecalho += '</select>';
+                            cabecalho        += '</select>';
                             break;
                         default:
 
-                            cabecalho +=
+                            cabecalho        +=
                                 '<input type="text" class="form-control" id="' + coluna + '"' +
                                 'placeholder="' + hint + '" value=' + valorID + ' ' +
                                 'name="' + coluna + '" ' + required + ' maxlength="' + inteiras + '" />';
                             break;
                     }
-                    cabecalho += '</div>\n';
+                    cabecalho                += '</div>\n';
                 }
             }
         }
-        cabecalho +=
+        cabecalho                            +=
             '     			</div>\n' +
             '			</div>\n' +
             '            <div class="modal-footer">\n' +
@@ -217,8 +217,8 @@ module.exports = {
             '        </div>\n' +
             '    </div>\n' +
             '</div>';
-        var chavePrimaria = chave[0].toLowerCase() == "estab" ? chave[1].toLowerCase() : chave[0].toLowerCase();
-        js +=
+        var chavePrimaria                     = chave[0].toLowerCase() == "estab" ? chave[1].toLowerCase() : chave[0].toLowerCase();
+        js                                   +=
             classe + '.formCadastrar.submit(function () {' +
             ' ajax' + classe + '.cadastrar(linha);' +
             classe + '.fecharModal();' +
@@ -244,7 +244,7 @@ module.exports = {
             '   linha = index;' +
             ' }' +
             '};';
-        var ajax =
+        var ajax                              =
             ' ajax' + classe + ' = {' +
             ' cadastrar: function (linha) {' +
             '   $.ajax({' +

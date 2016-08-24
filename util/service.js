@@ -1,6 +1,6 @@
-module.exports = {
+module.exports      = {
     service: function(projeto, classe) {
-        classe = classe.capitalizeFirstLetter().trim();
+        classe      = classe.capitalizeFirstLetter().trim();
         var service =
             'package br.com.' + projeto.toLowerCase() + '.service;\n' +
             'import br.com.fiscobase.repository.GenericVsRepository;\n' +
@@ -11,8 +11,8 @@ module.exports = {
     },
 
     serviceImpl: function(projeto, classe) {
-        classe = classe.capitalizeFirstLetter().trim();
-        var impl =
+        classe      = classe.capitalizeFirstLetter().trim();
+        var impl    =
             'package br.com.' + projeto.toLowerCase() + '.service.impl;\n' +
             'import br.com.fiscobase.repository.impl.GenericVsRepositoryImpl;\n' +
             'import br.com.' + projeto.toLowerCase() + '.model.' + classe.toLowerCase() + ';\n' +

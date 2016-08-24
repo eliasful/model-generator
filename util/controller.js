@@ -1,6 +1,6 @@
-module.exports = {
+module.exports         = {
     generator: function(projeto, classe) {
-        classe = classe.capitalizeFirstLetter();
+        classe         = classe.capitalizeFirstLetter();
         var controller =
             'package br.com.' + projeto + '.controller;\n' +
             'import br.com.' + projeto + '.model.' + classe + ';\n' +

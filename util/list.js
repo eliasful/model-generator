@@ -1,7 +1,7 @@
-module.exports = {
+module.exports                    = {
     generator: function(result, projeto, classe) {
-        classe = classe.capitalizeFirstLetter();
-        var cabecalho =
+        classe                    = classe.capitalizeFirstLetter();
+        var cabecalho             =
             '<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>\n' +
             '<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>\n' +
             '<%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>\n' +
@@ -28,28 +28,28 @@ module.exports = {
             '            </div>\n' +
             '            <table id="dados' + classe + 'Table" data-flat="true" class="table">\n' +
             '                <thead>\n';
-        for (var i = 0; i < result.length; i++) {
-            var coluna = result[i][1].trim().toLowerCase();
+        for (var i                = 0; i < result.length; i++) {
+            var coluna            = result[i][1].trim().toLowerCase();
             var descricaoCompleta = result[i][2];
-            var tabelaRelacao = result[i][14];
+            var tabelaRelacao     = result[i][14];
             if (tabelaRelacao)
                 if (tabelaRelacao.substr(0, 2).toLowerCase() == 'rh')
                     tabelaRelacao = tabelaRelacao.substr(2, tabelaRelacao.length).capitalizeFirstLetter();
                 else
                     tabelaRelacao = tabelaRelacao.capitalizeFirstLetter();
 
-            var chaveRelacao = result[i][16];
+            var chaveRelacao      = result[i][16];
             if (chaveRelacao)
-                var chaveRelacao = chaveRelacao.toLowerCase();
+                var chaveRelacao  = chaveRelacao.toLowerCase();
 
-            if (tabelaRelacao != null)
-                cabecalho +=
+            if (tabelaRelacao    != null)
+                cabecalho        +=
                 '                <th data-field="' + tabelaRelacao + '.' + chaveRelacao + '">' + descricaoCompleta + '</th>\n';
             else
-                cabecalho +=
+                cabecalho        +=
                 '                <th data-field="' + coluna + '">' + descricaoCompleta + '</th>\n';
         }
-        cabecalho +=
+        cabecalho                +=
             '                <th data-field="actions" data-formatter="operateFormatter" data-events="operateEvents">Ações</th>\n' +
             '                </thead>\n' +
             '            </table>\n' +
