@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 var config = require('../config');
 var generatorHTML = require('../util/hmtl');
 var generatorJava = require('../util/java');
@@ -12,15 +13,16 @@ var firebird = require('node-firebird');
 var zipFolder = require('zip-folder');
 var fsUtils = require("nodejs-fs-utils");
 
-var options = {};
 
-options.host = config.host;
-options.port = config.port;
-options.database = config.database;
-options.user = config.user;
-options.password = config.password;
-options.role = config.role
-options.pageSize = config.pageSize;
+var options                            = {};
+
+options.host                           = config.host;
+options.port                           = config.port;
+options.database                       = config.database;
+options.user                           = config.user;
+options.password                       = config.password;
+options.role                           = config.role
+options.pageSize                       = config.pageSize;
 
 String.prototype.capitalizeFirstLetter = function() {
     return this.charAt(0).toUpperCase() + this.slice(1).toLowerCase();
@@ -119,6 +121,8 @@ router.route('/gerar')
                             db.detach();
                         }
                     });
+                    res.send(java);
+                    db.detach();
                 }
             })
         });
@@ -126,8 +130,8 @@ router.route('/gerar')
 
 router.route('/config')
     .get(function(req, res) {
-        var fs = require('fs');
-        var exports =
+        var fs                         = require('fs');
+        var exports                    =
             "module.exports = config =" +
             "  {" +
             "    host: '" + req.query.host + "', " +
@@ -146,4 +150,4 @@ router.route('/config')
 
     });
 
-module.exports = router;
+module.exports                         = router;

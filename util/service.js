@@ -1,4 +1,4 @@
-module.exports = {
+module.exports      = {
     service: function(projeto, classe) {
         classe = classe.trim();
         var service =

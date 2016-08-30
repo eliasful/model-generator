@@ -1,3 +1,4 @@
+
 module.exports = {
     generator: function(result, projeto, classe, tabela, tabs, descricao) {
         var generetorArchive = require('../util/archive');
@@ -52,10 +53,6 @@ module.exports = {
             '$(function () {' +
             ' $("[data-toggle=' + 'tooltip' + ']").tooltip();' +
             ' ajax' + classe + '.listar();';
-
-
-
-
         var carregaAjax = "";
         var chave = [];
         var dataAjax = "";
@@ -86,9 +83,9 @@ module.exports = {
             var decimais = result[i][8];
             //dividindo os itens
             if (result[i][9])
-                var itemSelect = (result[i][9]).split(';');
-            var mascara = result[i][10];
-            var valorPadrao = result[i][13];
+                var itemSelect                = (result[i][9]).split(';');
+            var mascara                       = result[i][10];
+            var valorPadrao                   = result[i][13];
 
             //Verifica se a tabela possui as letras rh e rhw no inicio, para posteriormente serem usadas como classe, no java
             var tabelaRelacao = result[i][14];
@@ -119,19 +116,19 @@ module.exports = {
                 var bullet = ' ';
                 var tamanho = 6;
 
-                if (obrigatorio != 'N') {
-                    required = 'required';
-                    bullet = '<span class="campo-required">&bullet;</span>';
+                if (obrigatorio              != 'N') {
+                    required                  = 'required';
+                    bullet                    = '<span class="campo-required">&bullet;</span>';
                 } else {
-                    required = ' ';
-                    bullet = ' ';
+                    required                  = ' ';
+                    bullet                    = ' ';
                 }
 
                 //verifica se o campo atual, possui relação com alguma tabela,
                 //se tiver, então é criado o autocomplete,
                 //se não é verificado o tipo do campo e criado de acordo com o tipo (número, select, text e etc).
-                if (tabelaRelacao != null) {
-                    cabecalho += '<!-- ' + coluna + ' -->\n' +
+                if (tabelaRelacao            != null) {
+                    cabecalho                += '<!-- ' + coluna + ' -->\n' +
                         '<div class="col-lg-' + tamanho + ' col-md-' + tamanho + ' col-sm-6 col-xs-6">\n' +
                         '<label for="' + coluna + '" class="control-label">' + descricaoTecnica + bullet + ' </label>\n' +
                         ' <div class="input-group">\n' +
@@ -175,7 +172,7 @@ module.exports = {
                                 ' ' + required + '/>\n';
                             break;
                         case 'DATA':
-                            cabecalho +=
+                            cabecalho        +=
                                 '<div class="input-group date" id="' + coluna + 'Div">' +
                                 '<input type="text" id="' + coluna +
                                 '" name="' + coluna +
@@ -185,18 +182,18 @@ module.exports = {
                                 ' <span class="glyphicon glyphicon-calendar"></span>' +
                                 '</span>' +
                                 '</div>';
-                            js +=
+                            js               +=
                                 '$("#' + coluna + 'Div").datetimepicker({locale: "pt", format: "DD/MM/YYYY"});'
                             '$("#' + coluna + '").mask("99/99/9999", {placeholder: "__/__/____"});'
                             break;
                         case 'CHARCOMBO':
-                            cabecalho +=
+                            cabecalho        +=
                                 '<select class="form-control" id="' + coluna +
                                 '" name="' + coluna + '" ' + required + '>';
                             //inserindo as opções no select
                             for (data in itemSelect) {
                                 //pega o valor padrão, caso não esteja marcado
-                                var valor = itemSelect[data].substr(0, inteiras);
+                                var valor     = itemSelect[data].substr(0, inteiras);
                                 //verifica se o valor gerado é igual ao valor padrão
                                 //se for adiciona a opção selecionado
                                 if (valorPadrao == valor)
@@ -217,11 +214,11 @@ module.exports = {
                                 'name="' + coluna + '" ' + required + ' maxlength="' + inteiras + '" />';
                             break;
                     }
-                    cabecalho += '</div>\n';
+                    cabecalho                += '</div>\n';
                 }
             }
         }
-        cabecalho +=
+        cabecalho                            +=
             '     			</div>\n' +
             '			</div>\n' +
             '            <div class="modal-footer">\n' +
@@ -360,7 +357,6 @@ module.exports = {
             '   });' +
             ' }' +
             '};';
-
 
 
         generetorArchive.generator(classe + "/" + classe.toLowerCase() + ".js", js);
