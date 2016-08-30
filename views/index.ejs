@@ -1,42 +1,51 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= title %></title>
+<head>
+    <title>
+        <%= title %>
+    </title>
     <link rel='stylesheet' href='stylesheets/style.css' />
     <link rel='stylesheet' href='stylesheets/font-awesome.min.css ' />
-  </head>
-  <body>
+</head>
+<body>
     <main class="view">
-    <h1 class="title">
+        <h1 class="title">
         <%= title %>
     </h1>
-    <div class="block">
-      <div class="frm">
-        <form id="formulario">
-          <div class="group">
-            <input type="text" name="projeto" id="projeto" required>
-            <span class="highlight"></span>
-            <span class="bar"></span>
-            <label>Projeto</label>
-          </div>
+        <div class="block">
+            <div class="frm">
+                <form id="formulario">
+                    <div class="group">
+                        <input type="text" name="projeto" id="projeto" required>
+                        <span class="highlight"></span>
+                        <span class="bar"></span>
+                        <label>Projeto</label>
+                    </div>
 
-          <div class="group">
-            <input type="text" name="classe" id="classe" required>
-            <span class="highlight"></span>
-            <span class="bar"></span>
-            <label>Classe</label>
-          </div>
+                    <div class="group">
+                        <input type="text" name="classe" id="classe" required>
+                        <span class="highlight"></span>
+                        <span class="bar"></span>
+                        <label>Classe</label>
+                    </div>
 
-          <div class="group">
-            <input type="text" name="tabela" id="tabela" required>
-            <span class="highlight"></span>
-            <span class="bar"></span>
-            <label>Tabela</label>
-          </div>
-          <button type="submit" class="btn btn-submit">Gerar .java</button>
-          <button type="reset" class="btn btn-cancel">Limpar Campos</button>
-        </form>
-        <form id="formConfig">
+                    <div class="group">
+                        <input type="text" name="tabela" id="tabela" required>
+                        <span class="highlight"></span>
+                        <span class="bar"></span>
+                        <label>Tabela</label>
+                    </div>
+
+                    <div class="group">
+                        <input type="text" name="descricao" id="descricao" required>
+                        <span class="highlight"></span>
+                        <span class="bar"></span>
+                        <label>Descrição</label>
+                    </div>
+                    <button type="submit" class="btn btn-submit">Gerar Código</button>
+                    <button type="reset" class="btn btn-cancel">Limpar Campos</button>
+                </form>
+                <!-- <form id="formConfig">
           <span class="tooltip">
              <a class="gear" href="#" aria-label="Settings">
                 <i class="fa fa-cog fa-1x" aria-hidden="true"></i>
@@ -89,45 +98,28 @@
 
             </span>
           </span>
-          </form>
-      </div>
-    </div>
+          </form> -->
+            </div>
+        </div>
+        <pre class='code code-javascript'><code id="codigo"></code></pre>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="http://yourjavascript.com/30914111154/classie.js"></script>
+        <script type="text/javascript">
+            $('i[rel="pre"]').replaceWith(function() {
+                return $('<pre><code>' + $(this).html() + '</code></pre>');
+            });
+            var pres = document.querySelectorAll('pre,kbd,blockquote');
+            for (var i = 0; i < pres.length; i++) {
+                pres[i].addEventListener("dblclick", function() {
+                    var selection = getSelection();
+                    var range = document.createRange();
+                    range.selectNodeContents(this);
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                }, false);
+            }
+        </script>
+        <script src="javascripts/ajax.js"></script>
+</body>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <pre class='code code-javascript'><code id="codigo"></code></pre>
-     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-     <script src="http://yourjavascript.com/30914111154/classie.js"></script>
-    <script type="text/javascript">
-        $('i[rel="pre"]').replaceWith(function() {
-            return $('<pre><code>' + $(this).html() + '</code></pre>');
-        });
-        var pres = document.querySelectorAll('pre,kbd,blockquote');
-        for (var i = 0; i < pres.length; i++) {
-          pres[i].addEventListener("dblclick", function () {
-            var selection = getSelection();
-            var range = document.createRange();
-            range.selectNodeContents(this);
-            selection.removeAllRanges();
-            selection.addRange(range);
-          }, false);
-        }
-    </script>
-    <script src="javascripts/ajax.js"></script>
-  </body>
 </html>

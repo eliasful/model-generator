@@ -1,6 +1,9 @@
 module.exports = {
-    generator: function(projeto, classe) {
-        classe = classe.capitalizeFirstLetter();
+    generator: function(projeto, classe, result) {
+        classe = classe.trim();
+        var chaveRelacao = "";
+        if (result[0][20])
+            chaveRelacao = result[0][20].toLowerCase();
         var controller =
             'package br.com.' + projeto + '.controller;\n' +
             'import br.com.' + projeto + '.model.' + classe + ';\n' +
@@ -33,15 +36,15 @@ module.exports = {
             '    @ResponseBody\n' +
             '    @RequestMapping(value = "/carregar/{id}", method = RequestMethod.GET)\n' +
             '    public String carregar(@PathVariable("id") Integer id) {\n' +
-            '        return new Gson().toJson(' + classe.toLowerCase() + 'Service.findBy(' + classe + '.class, "id' + classe.toLowerCase() + '", id));\n' +
+            '        return new Gson().toJson(' + classe.toLowerCase() + 'Service.findBy(' + classe + '.class, "' + chaveRelacao +'", id));\n' +
             '    }\n' +
             '    @ResponseBody\n' +
             '    @RequestMapping(value = "/", method = RequestMethod.POST)\n' +
             '    public String salvar(' + classe + ' ' + classe.toLowerCase() + '){\n' +
             '        try {\n' +
-            '            if (' + classe + ' == null) return null;\n' +
-            '            Integer id = ' + classe.toLowerCase() + 'Service.save(' + classe.toLowerCase() + ');\n' +
-            '            ' + classe + '.setId' + classe.toLowerCase() + '(id)\n' +
+            '            if (' + classe.toLowerCase() + ' == null) return null;\n' +
+            '            Integer id = ' + classe.toLowerCase()  + 'Service.save(' + classe.toLowerCase() + ');\n' +
+            '            ' + classe.toLowerCase() + '.set' + chaveRelacao.capitalizeFirstLetter() + '(id);\n' +
             '            return new Gson().toJson(' + classe.toLowerCase() + ');\n' +
             '        }catch (Exception e){\n' +
             '            e.printStackTrace();\n' +
@@ -53,7 +56,7 @@ module.exports = {
             '    public Integer excluir(@PathVariable("id") Integer id){\n' +
             '        try {\n' +
             '            ' + classe + ' ' + classe.toLowerCase() + ' = new ' + classe + '();\n' +
-            '            ' + classe.toLowerCase() + '.setId' + classe.toLowerCase() + '(id);\n' +
+            '            ' + classe.toLowerCase() + '.set' + chaveRelacao.capitalizeFirstLetter() + '(id);\n' +
             '            return ' + classe.toLowerCase() + 'Service.delete(' + classe.toLowerCase() + ');\n' +
             '        }catch (Exception e){\n' +
             '            e.printStackTrace();\n' +

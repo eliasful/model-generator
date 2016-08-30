@@ -11,10 +11,13 @@
     "debug": "~2.2.0",
     "ejs": "~2.4.1",
     "express": "~4.13.4",
+    "gzipme": "0.0.9",
     "morgan": "~1.7.0",
     "node-firebird": "^0.7.5",
+    "nodejs-fs-utils": "^1.0.26",
     "nodemon": "^1.10.0",
     "rmdir": "^1.2.0",
-    "serve-favicon": "~2.3.0"
+    "serve-favicon": "~2.3.0",
+    "zip-folder": "^1.0.0"
   }
 }

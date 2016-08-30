@@ -1,4 +1,0 @@
-<group name="rhapp_vlrpadrao">
-   <js>/resources/scripts/rhppp/vlrpadrao/ajax.js</js>
-   <js>/resources/scripts/rhppp/vlrpadrao/vlrpadrao.js</js>
-</group>

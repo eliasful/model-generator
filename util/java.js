@@ -1,6 +1,6 @@
 module.exports = {
     generator: function(result, projeto, classe, tabela) {
-        classe = classe;
+        classe = classe.trim();
         var sql = "";
         var cabecalho = "";
         var pk = "";
@@ -24,13 +24,18 @@ module.exports = {
             //Verifica se a tabela possui as letras rh no inicio, para posteriormente serem usadas como classe, no java
             var tabelaRelacao = result[i][14];
             if (tabelaRelacao)
-                if (tabelaRelacao.substr(0, 2).toLowerCase() == 'rh')
+                if (tabelaRelacao.substr(0, 2).toLowerCase() == 'rh') {
                     tabelaRelacao = tabelaRelacao.substr(2, tabelaRelacao.length).capitalizeFirstLetter();
-                else
+                    if (tabelaRelacao.substr(0, 1).toLowerCase() == 'w')
+                        tabelaRelacao = tabelaRelacao.substr(1, tabelaRelacao.length).capitalizeFirstLetter();
+                } else
                     tabelaRelacao = tabelaRelacao.capitalizeFirstLetter();
 
             if (result[i][16])
                 var chaveRelacao = result[i][16].toLowerCase();
+
+            if (i == 0)
+                sql += '<span class="code-yellow line">@GeneratedValue</span></br>';
 
             if (tabelaRelacao) {
                 sql += '<span class="code-yellow line">@JoinColumn</span>(name = <span class="code-green">"' + chaveRelacao + '"</span>)</br>' +
@@ -65,6 +70,12 @@ module.exports = {
                     case 'MEMO PURO':
                         tipos = 'String';
                         break;
+                    case 'DATAHORA':
+                        tipos = 'Date';
+                        break;
+                    case 'BLOB':
+                        tipos = 'String';
+                        break;
                     default:
                         tipos = 'String /*default*/';
                         break;
@@ -76,6 +87,7 @@ module.exports = {
 
         cabecalho =
             '<span class="code-orange">package</span> br.com.' + projeto + '.model;</br></br>' +
+            '<span class="code-orange">import</span> br.com.fiscobase.persistence.GeneratedValue;</br>' +
             '<span class="code-orange">import</span> br.com.fiscobase.persistence.JoinColumn;</br>' +
             '<span class="code-orange">import</span> br.com.fiscobase.persistence.PrimaryKeys;</br>' +
             '<span class="code-orange">import</span> br.com.fiscobase.persistence.Table;</br>' +
