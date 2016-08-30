@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 var config = require('../config');
 var generatorHTML = require('../util/hmtl');
 var generatorJava = require('../util/java');
@@ -14,22 +13,22 @@ var zipFolder = require('zip-folder');
 var fsUtils = require("nodejs-fs-utils");
 
 
-var options                            = {};
+var options = {};
 
-options.host                           = config.host;
-options.port                           = config.port;
-options.database                       = config.database;
-options.user                           = config.user;
-options.password                       = config.password;
-options.role                           = config.role
-options.pageSize                       = config.pageSize;
+options.host = config.host;
+options.port = config.port;
+options.database = config.database;
+options.user = config.user;
+options.password = config.password;
+options.role = config.role
+options.pageSize = config.pageSize;
 
 String.prototype.capitalizeFirstLetter = function() {
     return this.charAt(0).toUpperCase() + this.slice(1).toLowerCase();
 }
 
 String.prototype.retiraEspaco = function() {
-    return this.replace( /\s/g, '' );
+    return this.replace(/\s/g, '');
 }
 
 router.route('/')
@@ -68,11 +67,11 @@ router.route('/gerar')
                     res.send(err);
                 } else {
                     var tab =
-                        " SELECT "+
-                        " SEQUENCIA, "+
-                        " DESCRICAO "+
-                        " FROM "+
-                        " PGUIA "+
+                        " SELECT " +
+                        " SEQUENCIA, " +
+                        " DESCRICAO " +
+                        " FROM " +
+                        " PGUIA " +
                         " WHERE TABELA = '" + tabela.toUpperCase() + "'";
                     db.execute(tab, function(err, tabs) {
                         if (err) {
@@ -130,8 +129,8 @@ router.route('/gerar')
 
 router.route('/config')
     .get(function(req, res) {
-        var fs                         = require('fs');
-        var exports                    =
+        var fs = require('fs');
+        var exports =
             "module.exports = config =" +
             "  {" +
             "    host: '" + req.query.host + "', " +
@@ -150,4 +149,4 @@ router.route('/config')
 
     });
 
-module.exports                         = router;
+module.exports = router;
