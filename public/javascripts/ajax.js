@@ -1,19 +1,3 @@
-/**
- *
- * flatNotify.js v0.1
- * @screenshake
- *
- * Inspired by :
- * http://tympanus.net/codrops/2014/07/23/notification-styles-inspiration/
- *
- * Animation courtesy :
- * bounce.js - http://bouncejs.com/
- *
- * Class manipulation
- * classie.js https://github.com/desandro/classie
- *
- */
-;
 (function(window) {
 
     var proto_methods = {
@@ -166,17 +150,24 @@ $(function() {
     var tabela = $("#tabela");
     var codigo = $("#codigo");
     var link = $("#link");
+    var btn = $("#btn");
 
     form.submit(function() {
         $.ajax({
             url: "/gerar",
             data: form.serialize(),
             type: "GET",
+            beforeSend: function(){
+              btn.prop('disabled', true);
+              btn.html('Aguarde...');
+            },
             success: function(response) {
                 codigo.html(response);
                 flatNotify().success('Boa meu garoto! :)');
-                setTimeout(function(){
-                  location.href = classe.val() + ".zip";
+                setTimeout(function() {
+                    location.href = classe.val() + ".zip";
+                    btn.prop('disabled', false);
+                    btn.html('Gerar Código');
                 }, 1000);
             },
             error: function(xhr, status, error) {

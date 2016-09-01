@@ -45,10 +45,10 @@ module.exports = {
 
             if (tabelaRelacao    != null)
                 cabecalho        +=
-                '                <th data-field="' + tabelaRelacao + '.' + chaveRelacao + '">' + descricaoCompleta + '</th>\n';
+                '                <th data-field="' + tabelaRelacao.toLowerCase() + '.' + chaveRelacao + '">' + descricaoCompleta + '</th>\n';
             else
                 cabecalho        +=
-                '                <th data-field="' + coluna + '">' + descricaoCompleta + '</th>\n';
+                '                <th data-field="' + coluna.toLowerCase() + '">' + descricaoCompleta + '</th>\n';
         }
         cabecalho                +=
             '                <th data-field="actions" data-formatter="operateFormatter" data-events="operateEvents">Ações</th>\n' +

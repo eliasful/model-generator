@@ -1,3 +1,4 @@
+//
 var config = require('../config');
 var generatorHTML = require('../util/hmtl');
 var generatorJava = require('../util/java');
@@ -95,7 +96,7 @@ router.route('/gerar')
                                 '</group>';
 
                             var header =
-                                '<li><a href="${appUrl}/secured/cadastros/' + classe.toLowerCase() + '">' + classe + '</a></li>'
+                                '<li><a href="${appUrl}/secured/cadastros/' + classe.toLowerCase() + '/">' + classe + '</a></li>'
 
                             generatorArchive.generator(classe + "/wro.xml", wro);
                             generatorArchive.generator(classe + "/header.jsp", header);
@@ -110,18 +111,15 @@ router.route('/gerar')
                                 if (err) {
                                     console.log('Ah não! Algo de errado não deu certo!', err);
                                 } else {
-                                    setTimeout(function() {
-                                        console.log('Boa meu garoto!');
-                                        fsUtils.rmdirsSync(classe);
-                                    }, 1);
+                                    console.log('Boa meu garoto!');
+                                    fsUtils.rmdirsSync(classe);
                                 }
                             });
+
                             res.send(java);
                             db.detach();
                         }
                     });
-                    res.send(java);
-                    db.detach();
                 }
             })
         });

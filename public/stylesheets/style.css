@@ -255,6 +255,10 @@ input:focus~ .highlight {
     box-shadow: 0 7px 14px rgba(0, 0, 0, 0.18), 0 5px 5px rgba(0, 0, 0, 0.12);
 }
 
+.btn:disabled {
+    box-shadow: none;
+}
+
 .btn.btn-submit {
     background: #2196F3;
     color: #bce0fb;
@@ -263,6 +267,11 @@ input:focus~ .highlight {
 .btn.btn-submit:hover {
     background: #0d8aee;
     color: #deeffd;
+}
+
+.btn.btn-submit:disabled {
+    background: #dee6ec;
+    color: #e9edf1;
 }
 
 .btn.btn-cancel {
