@@ -1,4 +1,3 @@
-//
 var config = require('../config');
 var generatorHTML = require('../util/hmtl');
 var generatorJava = require('../util/java');
@@ -6,6 +5,7 @@ var generatorService = require('../util/service');
 var generatorController = require('../util/controller');
 var generatorArchive = require('../util/archive');
 var generatorList = require('../util/list');
+var generatorTab = require('../util/tab');
 var fs = require('fs');
 var express = require('express');
 var router = express.Router();
@@ -32,6 +32,10 @@ String.prototype.retiraEspaco = function() {
     return this.replace(/\s/g, '');
 }
 
+String.prototype.retiraEspecial = function() {
+    return this.replace(/[^A-z\s\d][\\\^]?/g, '');
+}
+
 router.route('/')
     .get(function(req, res) {
         res.render('index', {
@@ -56,10 +60,13 @@ router.route('/gerar')
                 " C.ITENSCB, C.MASCARA, C.VALMIN, " +
                 " C.VALMAX, C.VALPADRAO, C.TABREL, " +
                 " C.INDREL, C.CHAVEREL, C.EXPRET, " +
-                " C.OBRIGATORIO, C.GUIA, I.CHAVE " +
+                " C.OBRIGATORIO, C.GUIA, I.CHAVE, " +
+                " G.DESCRICAO " +
                 " FROM PCOLUNAS C " +
                 " LEFT JOIN PINDICES I ON " +
                 " (C.TABELA = I.TABELA) " +
+                " LEFT JOIN PGUIA G ON " +
+                " (C.TABELA = G.TABELA AND C.GUIA = G.SEQUENCIA) " +
                 " WHERE C.TABELA = '" + tabela.toUpperCase() + "' ORDER BY C.SEQUENCIA";
 
             db.execute(sql, function(err, result) {
@@ -67,59 +74,47 @@ router.route('/gerar')
                     console.log(err);
                     res.send(err);
                 } else {
-                    var tab =
-                        " SELECT " +
-                        " SEQUENCIA, " +
-                        " DESCRICAO " +
-                        " FROM " +
-                        " PGUIA " +
-                        " WHERE TABELA = '" + tabela.toUpperCase() + "'";
-                    db.execute(tab, function(err, tabs) {
+
+                    classe = classe.trim();
+                    fs.mkdirSync(classe);
+                    var java = generatorJava.generator(result, projeto, classe, tabela);
+                    var controller = generatorController.generator(projeto, classe, result);
+                    var html = generatorHTML.generator(result, projeto, classe, tabela, descricao);
+                    var htmlLista = generatorList.generator(result, projeto, classe, descricao);
+                    var service = generatorService.service(projeto, classe);
+                    var serviceImpl = generatorService.serviceImpl(projeto, classe);
+                    var tab = generatorTab.generator(result, projeto, classe, tabela, descricao);
+
+                    var wro =
+                        '<group name="' + projeto.toLowerCase() + '_' + classe.toLowerCase() + '">\n' +
+                        '   <js>/resources/scripts/' + projeto.toLowerCase() + '/' + classe.toLowerCase() + '/ajax.js</js>\n' +
+                        '   <js>/resources/scripts/' + projeto.toLowerCase() + '/' + classe.toLowerCase() + '/' + classe.toLowerCase() + '.js</js>\n' +
+                        '</group>';
+
+                    var header =
+                        '<li><a href="${appUrl}/secured/cadastros/' + classe.toLowerCase() + '/">' + classe + '</a></li>'
+
+                    generatorArchive.generator(classe + "/wro.xml", wro);
+                    generatorArchive.generator(classe + "/header.jsp", header);
+                    generatorArchive.generator(classe + "/" + classe + ".java", java);
+                    generatorArchive.generator(classe + "/" + classe + "Controller.java", controller);
+                    generatorArchive.generator(classe + "/" + classe + "Service.java", service);
+                    generatorArchive.generator(classe + "/" + classe + "ServiceImpl.java", serviceImpl);
+                    generatorArchive.generator(classe + "/modal" + classe + ".jsp", html);
+                    generatorArchive.generator(classe + "/" + classe.toLowerCase() + ".jsp", htmlLista);
+                      generatorArchive.generator(classe + "/tab" + classe + ".jsp", tab);
+
+                    zipFolder(classe, 'public/' + classe + '.zip', function(err) {
                         if (err) {
-                            console.log(err);
-                            res.send(err);
+                            console.log('Ah não! Algo de errado não deu certo!', err);
                         } else {
-                            classe = classe.trim();
-                            console.log(tab);
-                            fs.mkdirSync(classe);
-                            var java = generatorJava.generator(result, projeto, classe, tabela);
-                            var controller = generatorController.generator(projeto, classe, result);
-                            var html = generatorHTML.generator(result, projeto, classe, tabela, tabs, descricao);
-                            var htmlLista = generatorList.generator(result, projeto, classe, descricao);
-                            var service = generatorService.service(projeto, classe);
-                            var serviceImpl = generatorService.serviceImpl(projeto, classe);
-
-                            var wro =
-                                '<group name="' + projeto.toLowerCase() + '_' + classe.toLowerCase() + '">\n' +
-                                '   <js>/resources/scripts/' + projeto.toLowerCase() + '/' + classe.toLowerCase() + '/ajax.js</js>\n' +
-                                '   <js>/resources/scripts/' + projeto.toLowerCase() + '/' + classe.toLowerCase() + '/' + classe.toLowerCase() + '.js</js>\n' +
-                                '</group>';
-
-                            var header =
-                                '<li><a href="${appUrl}/secured/cadastros/' + classe.toLowerCase() + '/">' + classe + '</a></li>'
-
-                            generatorArchive.generator(classe + "/wro.xml", wro);
-                            generatorArchive.generator(classe + "/header.jsp", header);
-                            generatorArchive.generator(classe + "/" + classe + ".java", java);
-                            generatorArchive.generator(classe + "/" + classe + "Controller.java", controller);
-                            generatorArchive.generator(classe + "/" + classe + "Service.java", service);
-                            generatorArchive.generator(classe + "/" + classe + "ServiceImpl.java", serviceImpl);
-                            generatorArchive.generator(classe + "/modal" + classe + ".jsp", html);
-                            generatorArchive.generator(classe + "/" + classe.toLowerCase() + ".jsp", htmlLista);
-
-                            zipFolder(classe, 'public/' + classe + '.zip', function(err) {
-                                if (err) {
-                                    console.log('Ah não! Algo de errado não deu certo!', err);
-                                } else {
-                                    console.log('Boa meu garoto!');
-                                    fsUtils.rmdirsSync(classe);
-                                }
-                            });
-
-                            res.send(java);
-                            db.detach();
+                            console.log('Boa meu garoto!');
+                            fsUtils.rmdirsSync(classe);
                         }
                     });
+
+                    res.send(java);
+                    db.detach();
                 }
             })
         });

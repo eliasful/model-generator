@@ -1,5 +1,5 @@
 module.exports = {
-    generator: function(result, projeto, classe, tabela, tabs, descricao) {
+    generator: function(result, projeto, classe, tabela, descricao) {
         var generetorArchive = require('../util/archive');
         classe = classe.trim();
         var cabecalho =
@@ -54,23 +54,7 @@ module.exports = {
             ' ajax' + classe + '.listar();';
         var carregaAjax = "";
         var chave = [];
-        if (tabs.length > 0) {
-            cabecalho += '' +
-                '<ul class="nav nav-tabs" role="tablist">\n';
-            for (var i = 0; i < tabs.length; i++) {
-                var descricao = tabs[i][1];
-                var idTab = descricao.retiraEspaco().toLowerCase();
-                var active = i == 0 ? 'active' : ' ';
-                cabecalho +=
-                    '<li role="presentation" class="' + active + '">\n' +
-                    '<a href="#' + idTab + '"\n' +
-                    'aria-controls="' + idTab + '"\n' +
-                    'role="tab" data-toggle="tab">' + descricao + '</a>\n' +
-                    '</li>\n';
-            }
-            cabecalho += '</ul>\n' +
-                '<div class="tab-content"></div>\n';
-        }
+        var cont = 0;
         for (var i = 0; i < result.length; i++) {
             var coluna = result[i][1].trim().toLowerCase();
             var descricaoCompleta = result[i][2];
@@ -148,11 +132,9 @@ module.exports = {
                     carregaAjax += 'setTextSelect2("#' + coluna + '", data.' + tabelaRelacao.toLowerCase() + '.' + chaveRelacao + ', data.' + tabelaRelacao.toLowerCase() + '.' + textoRelacao + ');';
                 } else {
                     var valorID = "'' ";
-                    var br = "";
                     if ((coluna.toLowerCase() === chave[0].toLowerCase() || coluna === chave[1])) {
                         valorID = '"0" readonly';
                         tamanho = 2;
-                        br = "</br>";
                     } else {
                         valorID = "'' ";
                         tamanho = 6;
@@ -175,7 +157,7 @@ module.exports = {
                                 '<div class="input-group date" id="' + coluna + 'Div">' +
                                 '<input type="text" id="' + coluna +
                                 '" name="' + coluna +
-                                '" ' + required + ' class="form-control ' +
+                                '" ' + required + ' class="form-control" ' +
                                 ' placeholder="' + hint + '" required>' +
                                 '<span class="input-group-addon">' +
                                 ' <span class="glyphicon glyphicon-calendar"></span>' +
@@ -213,10 +195,11 @@ module.exports = {
                                 'name="' + coluna + '" ' + required + ' maxlength="' + inteiras + '" />';
                             break;
                     }
-                    cabecalho += br + '</div>\n';
+                    cabecalho += '</div>\n';
                 }
             }
         }
+
         cabecalho +=
             '     			</div>\n' +
             '			</div>\n' +

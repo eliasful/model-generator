@@ -166,15 +166,20 @@ $(function() {
                 flatNotify().success('Boa meu garoto! :)');
                 setTimeout(function() {
                     location.href = classe.val() + ".zip";
-                    btn.prop('disabled', false);
-                    btn.html('Gerar Código');
                 }, 1000);
             },
             error: function(xhr, status, error) {
                 codigo.html("");
                 flatNotify().error('Ah não... Algo de errado não deu certo! :/');
                 console.log(error);
+            },
+            complete: function(data) {
+              setTimeout(function() {
+                  btn.prop('disabled', false);
+                  btn.html('Gerar Código');
+              }, 1000);
             }
+
         });
         return false;
     });
